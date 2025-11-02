@@ -18,7 +18,7 @@ public class InfraCacheCleaner implements JobExecutionListener {
     }
 
     @Override
-    public void beforeJob(JobExecution jobExecution) {
+    public void afterJob(JobExecution jobExecution) {
         log.info("Infra Redis 캐시 초기화 시작");
         Set<String> keys = redisTemplate.keys("infra:score:*");
         if (keys != null && !keys.isEmpty()) {

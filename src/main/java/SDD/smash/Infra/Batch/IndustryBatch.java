@@ -29,7 +29,6 @@ public class IndustryBatch {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
     private final IndustryRepository industryRepository;
-    private final InfraCacheCleaner infraCacheCleaner;
 
 
     @Value("${industry.filePath}")
@@ -38,7 +37,6 @@ public class IndustryBatch {
     @Bean
     public Job industryJob(){
         return new JobBuilder("industryJob", jobRepository)
-                .listener(infraCacheCleaner)
                 .start(industryStep())
                 .build();
     }

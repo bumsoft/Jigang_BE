@@ -41,7 +41,6 @@ public class JobCodeMiddleBatch {
     private final PlatformTransactionManager platformTransactionManager;
     private final JobCodeMiddleRepository jobCodeMiddleRepository;
     private final JobCodeTopRepository jobCodeTopRepository;
-    private final JobCacheCleaner jobCacheCleaner;
 
 
     @Value("${jobCodeMiddle.filePath}")
@@ -62,7 +61,6 @@ public class JobCodeMiddleBatch {
     @Bean
     public Job jcMiddleJob(){
         return new JobBuilder("jcMiddleJob", jobRepository)
-                .listener(jobCacheCleaner)
                 .start(jcMiddleStep())
                 .build();
     }
