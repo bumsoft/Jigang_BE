@@ -82,19 +82,20 @@ public class RecommendService {
         scores.sort((a,b) -> b.getScore().compareTo(a.getScore()));
 
         List<ScoreDTO> top10 = scores.size() > 10 ? scores.subList(0, 10) : scores;
-
         List<RecommendDTO> result = new ArrayList<>();
+        Integer maxScore = top10.get(0).getScore();
+
         for(ScoreDTO dto : top10)
         {
             String sigunguCode = dto.getSigunguCode();
-            Integer score = dto.getScore();
+            Integer finalScore = (int) Math.round(((double) dto.getScore() / maxScore) * 100);
 
             RecommendDTO rd = RecommendDTO.builder()
                     .sidoCode(dto.getSidoCode())
                     .sidoName(dto.getSidoName())
                     .sigunguCode(dto.getSigunguCode())
                     .sigunguName(dto.getSigunguName())
-                    .score(score)
+                    .score(finalScore)
 
                     .totalJobInfo(jobService.getJobInfoBySigungu(sigunguCode))
                     .fitJobInfo(jobService.getJobInfoBySigunguAndJobCode(sigunguCode, midJobCode)) //jobCode 없는 경우 null
