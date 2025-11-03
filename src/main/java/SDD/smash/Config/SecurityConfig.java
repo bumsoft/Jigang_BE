@@ -1,6 +1,9 @@
 package SDD.smash.Config;
 
+import SDD.smash.Security.Filter.ApiRateLimitFilter;
+import SDD.smash.Security.Service.ApiRateLimitService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +12,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -19,7 +23,10 @@ import static java.util.Collections.singletonList;
 
 @EnableWebSecurity
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final ApiRateLimitService apiRateLimitService;
 
     @Value("${front_url}")
     private String[] frontUrl;
@@ -68,6 +75,10 @@ public class SecurityConfig {
                         }));
         http
                 .formLogin((formLogin) -> formLogin.disable());
+
+
+        http
+                .addFilterBefore(new ApiRateLimitFilter(apiRateLimitService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
