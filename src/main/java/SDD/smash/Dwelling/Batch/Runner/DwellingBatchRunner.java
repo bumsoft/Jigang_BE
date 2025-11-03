@@ -12,6 +12,7 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
@@ -29,14 +30,17 @@ public class DwellingBatchRunner {
     private final SeedProperties seedProperties;
 
     private final String SEED_VERSION;
+    private final String DEALYMD;
 
     public DwellingBatchRunner(@Qualifier("dwellingJob") Job dwellingJob, JobLauncher jobLauncher,
-                               BatchGuard guard, SeedProperties seedProperties) {
+                               BatchGuard guard, SeedProperties seedProperties,
+                               @Value("${dwelling.dealYmd}") String dealymd) {
         this.dwellingJob = dwellingJob;
         this.jobLauncher = jobLauncher;
         this.guard = guard;
         this.seedProperties = seedProperties;
         this.SEED_VERSION = seedProperties.getVersion();
+        this.DEALYMD = dealymd;
     }
 
     @Order(10)
@@ -49,12 +53,11 @@ public class DwellingBatchRunner {
                 return;
             }
 
-            String dealYmd = "202509";
             long months = 12L;
             String codes = null;
 
             JobParameters params = new JobParametersBuilder()
-                    .addString("dealYmd", dealYmd)
+                    .addString("dealYmd", DEALYMD)
                     .addLong("months", months)
                     .addString("seedVersion", SEED_VERSION)
                     .addLong("triggerTime", System.currentTimeMillis())
