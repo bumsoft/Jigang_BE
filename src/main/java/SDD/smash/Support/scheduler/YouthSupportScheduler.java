@@ -32,7 +32,7 @@ public class YouthSupportScheduler {
      * 이후 3일 간격으로 반복 수행
      * initialDelay=0으로 컨텍스트 시작 직후 실행 => 개발시에는 불필요한 트래픽을 줄이기위해 사용x
      */
-    @Scheduled(initialDelay =1111111110,fixedDelayString = "#{T(java.time.Duration).ofDays(3).toMillis()}")
+    @Scheduled(initialDelay =0,fixedDelayString = "#{T(java.time.Duration).ofDays(3).toMillis()}")
     public void runJob()
     {
         long started = System.currentTimeMillis();
@@ -58,7 +58,7 @@ public class YouthSupportScheduler {
 
                     log.info("Cached: {} (totCount={})", baseKey, result.getTotCount());
                 }catch(Exception e){
-                    log.warn("Fail: code={}, tag={}: {}", code, tag.name(), e.getMessage());
+                    log.warn("Fail: code={}, tag={}", code, tag.name());
                 }
             }
         }
