@@ -79,8 +79,8 @@ public class MolitAptRentAdapter {
             JsonNode jsonNode = parseJsonWithXmlFallback(resp.getHeaders().getContentType(), body);
             return extractRecords(jsonNode);
         } catch (Exception e){
-            log.error("[API ERROR] sigungu={}, ym={}, page={}, msg={}",
-                    sigunguCode, yearMonth, pageNo, e.getMessage(), e);
+            log.error("[API ERROR] sigungu={}, ym={}, page={}",
+                    sigunguCode, yearMonth, pageNo, e);
             throw e; // rethrow → 배치 retry/fault-tolerant가 동작
         }
 
