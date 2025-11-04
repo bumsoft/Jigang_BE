@@ -22,9 +22,9 @@ public class InfraService {
     private final AddressVerifyService addressVerifyService;
 
     /**
-     * 해당 시군구의 주 인프라(4종) 개수 반환(지역추천 반환용)
+     * 해당 시군구의 주 인프라(4종) 개수 및 점수 반환(지역추천 반환용)
      */
-    public List<InfraMajor> getMajorInfraNum(String sigunguCode)
+    public List<InfraMajor> getMajorInfraNumAndScore(String sigunguCode)
     {
         addressVerifyService.checkSigunguCodeOrThrow(sigunguCode);
         List<InfraMajor> list = new ArrayList<>();

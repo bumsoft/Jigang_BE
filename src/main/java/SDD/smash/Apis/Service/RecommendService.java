@@ -105,7 +105,7 @@ public class RecommendService {
 
                     .dwellingSimpleInfo(dwellingService.getDwellingSimpleInfo(sigunguCode))
 
-                    .infraMajors(infraService.getMajorInfraNum(sigunguCode))
+                    .infraMajors(infraService.getMajorInfraNumAndScore(sigunguCode))
                     .build();
             result.add(rd);
         }
