@@ -85,8 +85,11 @@ public class SupportService {
             SupportListDTO value = ops.get(baseKey);
             if(value != null)
             {
-                if(dto == null) dto = new SupportListDTO();
-                dto.setSupportDTOList(new ArrayList<SupportDTO>());
+                if(dto == null)
+                {
+                    dto = new SupportListDTO();
+                    dto.setSupportDTOList(new ArrayList<SupportDTO>());
+                }
                 List<SupportDTO> list = value.getSupportDTOList();
                 dto.getSupportDTOList().addAll(list);
             }

@@ -9,4 +9,5 @@ import lombok.Getter;
 public class InfraMajor {
     private Major major;
     private Long num;
+    private Double score;
 }
