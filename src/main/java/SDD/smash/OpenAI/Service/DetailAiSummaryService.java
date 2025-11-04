@@ -3,7 +3,7 @@ package SDD.smash.OpenAI.Service;
 import SDD.smash.Apis.Dto.DetailDTO;
 import SDD.smash.Apis.Dto.DetailResponseDTO;
 import SDD.smash.OpenAI.Client.OpenAiClient;
-import SDD.smash.OpenAI.Converter.SummaryConverter;
+import SDD.smash.OpenAI.Converter.AiConverter;
 import SDD.smash.OpenAI.Dto.OpenAiMessage;
 import SDD.smash.OpenAI.Dto.OpenAiRequest;
 import SDD.smash.OpenAI.Dto.OpenAiResponse;
@@ -64,7 +64,7 @@ public class DetailAiSummaryService {
 
             String aiSummaryContent = response.getChoices().get(0).getMessage().getContent();
 
-            return SummaryConverter.toResponseDTO(dto, aiSummaryContent);
+            return AiConverter.toResponseDTO(dto, aiSummaryContent);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

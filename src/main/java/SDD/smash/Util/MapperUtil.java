@@ -29,4 +29,12 @@ public class MapperUtil {
         return null;
     }
 
+    public static String extractJson(String raw) {
+        int s = raw.indexOf('{');
+        int e = raw.lastIndexOf('}');
+        if (s == -1 || e == -1 || s > e) {
+            throw new IllegalStateException("응답에 유효한 JSON 객체가 없습니다.");
+        }
+        return raw.substring(s, e + 1).trim();
+    }
 }

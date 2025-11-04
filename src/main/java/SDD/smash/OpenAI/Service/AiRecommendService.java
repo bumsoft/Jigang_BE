@@ -1,9 +1,11 @@
 package SDD.smash.OpenAI.Service;
 
-import SDD.smash.Apis.Dto.DetailDTO;
 import SDD.smash.Apis.Dto.DetailResponseDTO;
+import SDD.smash.Apis.Dto.RecommendDTO;
+import SDD.smash.Apis.Dto.RecommendResponseDTO;
 import SDD.smash.OpenAI.Client.OpenAiClient;
-import SDD.smash.OpenAI.Converter.SummaryConverter;
+import SDD.smash.OpenAI.Converter.AiConverter;
+import SDD.smash.OpenAI.Dto.AiRecommendDTO;
 import SDD.smash.OpenAI.Dto.OpenAiMessage;
 import SDD.smash.OpenAI.Dto.OpenAiRequest;
 import SDD.smash.OpenAI.Dto.OpenAiResponse;
@@ -14,59 +16,72 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static SDD.smash.Util.MapperUtil.extractJson;
+
 @Service
-public class DetailAiSummaryService {
+public class AiRecommendService {
     private final OpenAiClient openAiClient;
     private final ObjectMapper objectMapper;
     private final String MODEL;
 
 
-    public DetailAiSummaryService(OpenAiClient openAiClient, ObjectMapper objectMapper,
-                                  @Value("${openai.model}") String model) {
+    public AiRecommendService(OpenAiClient openAiClient, ObjectMapper objectMapper,
+                              @Value("${openai.model}") String model) {
         this.openAiClient = openAiClient;
         this.objectMapper = objectMapper;
         this.MODEL = model;
 
     }
 
-    public DetailResponseDTO summarize(DetailDTO dto){
+    public List<RecommendResponseDTO> summarize(List<RecommendDTO> recommendList){
         try{
-            String json = objectMapper.writeValueAsString(dto);
+            String json = objectMapper.writeValueAsString(recommendList);
 
 
             // 1) system 메시지: 규칙/톤 지시
             OpenAiMessage system = new OpenAiMessage(
                     "system",
-                            "모든 질문에는 친절한 AI 비서로서 답변해주세요." +
-                            "응답은 한국어로, 간결하고 사실 기반으로 작성하세요."
+                    "당신은 한국어로 간결하고 사실 기반으로 답하는 AI 비서입니다. " +
+                            "반환은 반드시 순수 JSON 하나의 객체만 출력하세요."
             );
 
             String userPrompt = """
-            아래는 특정 지역의 상세 데이터(JSON)입니다.
-            이 정보를 바탕으로 '사람이 이해하기 쉬운 한국어 요약'을 작성하세요.
+                아래는 사용자 맞춤 지역 추천 데이터(JSON 배열)입니다.
+                'score'는 무시하고, 나머지 정보(일자리/지원/주거/인프라)를 근거로
+                당신의 판단으로 사용자에게 적합한 시군구 3곳을 추천하세요.
 
-            작성 규칙:
-            - 한 문단 핵심 요약(한 줄)
-            - 장점(2~4개 불릿)
-            - 일자리/지원/주거/인프라 핵심 포인트 표(열: 항목 | 요약)
-            - 과장/추정 금지, 데이터 없는 사실 배제
-            - 상대점수/비율은 '상대 평가'임을 명시
+                출력 규칙:
+                - 순수 JSON만 출력 (코드블록/설명/접두사/접미사 금지)
+                - recommendations는 정확히 3개
+                - 각 추천은 sigunguCode와 1줄 reason 포함
+                - 입력 배열에 존재하지 않는 sigunguCode는 절대 반환하지 말 것
 
-            [지역 상세 JSON]
-            ```json
-            %s
-            ```
-            """.formatted(json);
+                스키마(JSON):
+                {
+                  "recommendations": [
+                    { "sigunguCode": "string", "reason": "string" },
+                    { "sigunguCode": "string", "reason": "string" },
+                    { "sigunguCode": "string", "reason": "string" }
+                  ]
+                }
+
+                입력(JSON 배열):
+                %s
+                """.formatted(json);
             OpenAiMessage user = new OpenAiMessage("user", userPrompt);
             OpenAiRequest request = new OpenAiRequest(MODEL, List.of(system, user));
 
             OpenAiResponse response = openAiClient.getChatCompletion(request);
+            String raw = response.getChoices().get(0).getMessage().getContent();
+            String jsonOnly = extractJson(raw);
 
-            String aiSummaryContent = response.getChoices().get(0).getMessage().getContent();
+            AiRecommendDTO aiDto = objectMapper.readValue(jsonOnly, AiRecommendDTO.class);
 
-            return SummaryConverter.toResponseDTO(dto, aiSummaryContent);
+
+            return AiConverter.toResponseList(recommendList, aiDto);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
+
 }
