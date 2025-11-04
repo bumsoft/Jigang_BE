@@ -7,7 +7,6 @@ import SDD.smash.Apis.Dto.ScoreDTO;
 import SDD.smash.Dwelling.Entity.DwellingType;
 import SDD.smash.Dwelling.Service.DwellingScoreSerivce;
 import SDD.smash.Dwelling.Service.DwellingService;
-import SDD.smash.Infra.Entity.InfraImportance;
 import SDD.smash.Infra.Service.InfraScoreService;
 import SDD.smash.Infra.Service.InfraService;
 import SDD.smash.Job.Service.JobScoreService;
@@ -47,13 +46,13 @@ public class RecommendService {
             String midJobCode,
             DwellingType dwellingType, //필수
             Integer price, //필수
-            InfraImportance infraImportance //필수
+            Integer infraChoice //필수
     )
     {
         Map<String, Integer> jobScoreMap = jobScoreService.getJobScore(midJobCode);
         Map<String, Integer> dwellingScoreMap = dwellingScoreService.getDwellingScoreByType(dwellingType, price);
         Map<String, Integer> supportScoreMap = supportScoreService.getSupportScoresByTag(supportTag);
-        Map<String, Integer> infraScoreMap = infraScoreService.getInfraScoresByImportance(infraImportance);
+        Map<String, Integer> infraScoreMap = infraScoreService.getInfraScoresByChoice(infraChoice);
 
         List<CodeNameDTO> codeNames = sigunguRepository.findAllCodeNames();
 

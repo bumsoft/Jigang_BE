@@ -30,10 +30,10 @@ public class RecommendController {
             @RequestParam(name = "midJobCode", required = false) String midJobCode,
             @RequestParam(name = "dwellingType", required = true) @NotNull(message = "주거 유형은 필수입니다.") DwellingType dwellingType,
             @RequestParam(name = "price", required = true) @NotNull(message = "가격은 필수입니다.") Integer price,
-            @RequestParam(name = "infraImportance", required = true) @NotNull(message = "인프라 중요도는 필수입니다.") InfraImportance infraImportance
+            @RequestParam(name = "infraChoice", required = true) @NotNull(message = "인프라 선택은 필수입니다.") Integer infraChoice
             )
     {
-        List<RecommendDTO> recommend = recommendService.recommend(supportTag, midJobCode, dwellingType, price, infraImportance);
+        List<RecommendDTO> recommend = recommendService.recommend(supportTag, midJobCode, dwellingType, price, infraChoice);
         return ResponseEntity.ok(recommend);
     }
 }
