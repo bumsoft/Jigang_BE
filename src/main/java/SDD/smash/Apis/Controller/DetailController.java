@@ -22,16 +22,6 @@ public class DetailController {
     private final DetailService detailService;
     private final DetailAiSummaryService detailAiSummaryService;
 
-
-//    @GetMapping("/detail")
-//    public ResponseEntity<DetailDTO> recommend(
-//            @RequestParam(name = "sigunguCode", required = true) @NotNull(message = "지역코드는 필수입니다.") String sigunguCode,
-//            @RequestParam(name = "midJobCode", required = false) String midJobCode
-//    )
-//    {
-//        DetailDTO dto = detailService.details(sigunguCode, midJobCode);
-//        return ResponseEntity.ok(dto);
-//    }
     @GetMapping("/detail")
     public ResponseEntity<DetailResponseDTO> recommend(
             @RequestParam(name = "sigunguCode", required = true) @NotNull(message = "지역코드는 필수입니다.") String sigunguCode,
