@@ -19,7 +19,8 @@ public interface InfraRepository extends JpaRepository<Infra,Long> {
     @Query("""
     SELECT new SDD.smash.Infra.Dto.InfraMajor(
         ind.major,
-        SUM(i.count)
+        SUM(i.count),
+        AVG(i.score)
     )
     FROM Infra i
     JOIN i.industry ind
