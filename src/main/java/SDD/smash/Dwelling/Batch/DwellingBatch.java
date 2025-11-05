@@ -81,7 +81,7 @@ public class DwellingBatch {
      */
     @Bean
     @StepScope
-    public ItemReader<WorkItem> dwellingReader(
+    public IteratorItemReader<WorkItem> dwellingReader(
             @Value("#{jobParameters['dealYmd']}") String dealYmd,
             @Value("#{jobParameters['months']}") Long months
     ) {
