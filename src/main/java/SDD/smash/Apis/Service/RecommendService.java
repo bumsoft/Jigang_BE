@@ -11,7 +11,6 @@ import SDD.smash.Infra.Service.InfraScoreService;
 import SDD.smash.Infra.Service.InfraService;
 import SDD.smash.Job.Service.JobScoreService;
 import SDD.smash.Job.Service.JobService;
-import SDD.smash.Support.domain.SupportTag;
 import SDD.smash.Support.service.SupportScoreService;
 import SDD.smash.Support.service.SupportService;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +41,7 @@ public class RecommendService {
 
     @Transactional(readOnly = true)
     public List<RecommendDTO> recommend(
-            SupportTag supportTag,
+            Integer supportChoice, //필수
             String midJobCode,
             DwellingType dwellingType, //필수
             Integer price, //필수
@@ -51,7 +50,7 @@ public class RecommendService {
     {
         Map<String, Integer> jobScoreMap = jobScoreService.getJobScore(midJobCode);
         Map<String, Integer> dwellingScoreMap = dwellingScoreService.getDwellingScoreByType(dwellingType, price);
-        Map<String, Integer> supportScoreMap = supportScoreService.getSupportScoresByTag(supportTag);
+        Map<String, Integer> supportScoreMap = supportScoreService.getSupportScoresByTag(supportChoice);
         Map<String, Integer> infraScoreMap = infraScoreService.getInfraScoresByChoice(infraChoice);
 
         List<CodeNameDTO> codeNames = sigunguRepository.findAllCodeNames();
@@ -59,7 +58,7 @@ public class RecommendService {
         List<ScoreDTO> scores = new ArrayList<>();
 
         int div = 4;
-        if(supportTag == null) div--; //정책 선택 안 한 경우 점수 산정 제외
+        if(supportChoice == null || supportChoice == 0) div--; //정책 선택 안 한 경우 점수 산정 제외
         if(infraChoice == null || infraChoice == 0) div--; //인프라 선택 안 한 경우 점수 산정 제외
 
 
@@ -104,7 +103,7 @@ public class RecommendService {
                     .fitJobInfo(jobService.getJobInfoBySigunguAndJobCode(sigunguCode, midJobCode)) //jobCode 없는 경우 null
 
                     .totalSupportNum(supportService.getAllSupportNum(sigunguCode))
-                    .fitSupportNum(supportService.getFitSupportNum(sigunguCode, supportTag)) //tag없는 경우 null
+                    .fitSupportNum(supportService.getFitSupportNum(sigunguCode, supportChoice)) //tag없는 경우 null
 
                     .dwellingSimpleInfo(dwellingService.getDwellingSimpleInfo(sigunguCode))
 
