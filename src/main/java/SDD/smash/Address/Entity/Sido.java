@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Builder
-@Getter @Setter
+@Getter
 @NoArgsConstructor @AllArgsConstructor
 public class Sido {
 

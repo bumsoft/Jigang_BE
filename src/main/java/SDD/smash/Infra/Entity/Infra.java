@@ -19,7 +19,7 @@ import java.math.BigDecimal;
                 @Index(name = "idx_infra_industry", columnList = "industry_code")
         }
 )
-@Getter @Setter
+@Getter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
 public class Infra {

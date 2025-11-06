@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
-@Getter @Setter
+@Getter
 @Builder
 @NoArgsConstructor @AllArgsConstructor
 public class Population {
