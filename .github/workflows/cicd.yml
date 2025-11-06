@@ -16,7 +16,7 @@ env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ secrets.DOCKERHUB_REPO }}
   USE_FLOATING_LATEST: "false"
-  PLATFORMS: "linux/amd64"                 # ← 기본 플랫폼 지정(필요 시 arm64 추가)
+  PLATFORMS: "linux/amd64"
 
 jobs:
   build-and-push:
