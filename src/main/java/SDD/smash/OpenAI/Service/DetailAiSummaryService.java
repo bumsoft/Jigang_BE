@@ -6,6 +6,7 @@ import SDD.smash.Exception.Exception.BusinessException;
 import SDD.smash.OpenAI.Client.OpenAiClient;
 import SDD.smash.OpenAI.Converter.AiConverter;
 import SDD.smash.OpenAI.Dto.*;
+import SDD.smash.OpenAI.OpenAiOutputSanitizer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -79,7 +80,9 @@ public class DetailAiSummaryService {
                     .replaceAll("[ \t]+\\r?\\n", "\n") // 줄 끝 공백 제거
                     .trim();
 
-            return AiConverter.toResponseDTO(dto, aiSummaryContent);
+            String sanitizedSummary = OpenAiOutputSanitizer.sanitize(aiSummaryContent);
+
+            return AiConverter.toResponseDTO(dto, sanitizedSummary);
         } catch (JsonProcessingException e) {
             return AiConverter.toResponseDTO(dto,null);
         } catch (BusinessException e){

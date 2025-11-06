@@ -5,10 +5,12 @@ import SDD.smash.Apis.Dto.RecommendDTO;
 import SDD.smash.Exception.Exception.BusinessException;
 import SDD.smash.OpenAI.Client.OpenAiClient;
 import SDD.smash.OpenAI.Converter.AiConverter;
+import SDD.smash.OpenAI.Dto.AiPick;
 import SDD.smash.OpenAI.Dto.AiRecommendDTO;
 import SDD.smash.OpenAI.Dto.OpenAiMessage;
 import SDD.smash.OpenAI.Dto.OpenAiRequest;
 import SDD.smash.OpenAI.Dto.OpenAiResponse;
+import SDD.smash.OpenAI.OpenAiOutputSanitizer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -93,7 +95,8 @@ public class AiRecommendService {
                 return AiConverter.toResponseList(recommendList,null);
             }
             AiRecommendDTO aiDto = objectMapper.readValue(jsonOnly, AiRecommendDTO.class);
-            return AiConverter.toResponseList(recommendList, aiDto);
+            AiRecommendDTO sanitizedDto = sanitizeRecommendations(aiDto);
+            return AiConverter.toResponseList(recommendList, sanitizedDto);
         } catch (JsonProcessingException e) {
             return AiConverter.toResponseList(recommendList,null);
         } catch (BusinessException e){
@@ -102,4 +105,18 @@ public class AiRecommendService {
         }
     }
 
+    private AiRecommendDTO sanitizeRecommendations(AiRecommendDTO aiRecommendDTO) {
+        if (aiRecommendDTO == null || aiRecommendDTO.getRecommendations() == null) {
+            return aiRecommendDTO;
+        }
+
+        return AiRecommendDTO.builder()
+                .recommendations(aiRecommendDTO.getRecommendations().stream()
+                        .map(pick -> AiPick.builder()
+                                .sigunguCode(pick.getSigunguCode())
+                                .reason(OpenAiOutputSanitizer.sanitize(pick.getReason()))
+                                .build())
+                        .toList())
+                .build();
+    }
 }
