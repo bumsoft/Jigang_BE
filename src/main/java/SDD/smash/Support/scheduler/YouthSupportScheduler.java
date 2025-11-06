@@ -57,7 +57,6 @@ public class YouthSupportScheduler {
 
                     listOps.set(baseKey,result.getDto(),Duration.ofDays(4));
 
-                    log.info("Cached: {} (totCount={})", baseKey, result.getTotCount());
                 }catch(Exception e){
                     log.warn("Fail: code={}, tag={}", code, tag.name());
                 }

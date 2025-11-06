@@ -93,7 +93,7 @@ public class MolitAptRentAdapter {
             }
             return xmlMapper.readTree(body.getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
-            log.warn("parseJsonWithXmlFallback failed: {}", e.getMessage());
+            log.warn("parseJsonWithXmlFallback failed");
             return objectMapper.createObjectNode();
         }
     }
@@ -108,8 +108,8 @@ public class MolitAptRentAdapter {
         List<RentRecord> list = new ArrayList<>();
         if (items.isArray()) {
             for (JsonNode item : items) {
-                RentRecord record = toRecord(item);
-                list.add(record);
+                RentRecord recordd = toRecord(item);
+                list.add(recordd);
             }
         } else {
             list.add(toRecord(items));

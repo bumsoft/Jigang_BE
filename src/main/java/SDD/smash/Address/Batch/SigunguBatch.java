@@ -108,7 +108,7 @@ public class SigunguBatch {
         return dto -> {
             String sidoCode = addLeadingZero(normalize(dto.getSido_code()));
             if(sidoCode == null){
-                log.warn("❗ Empty sido key. Skip row.");
+                log.warn("Empty sido key. Skip row.");
                 return null;
             }
             Sido sido = resolveSido(sidoCode);
