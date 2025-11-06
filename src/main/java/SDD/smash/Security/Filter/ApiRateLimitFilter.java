@@ -40,13 +40,6 @@ public class ApiRateLimitFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 개발환경인 경우 레이트리밋을 적용하지 않음
-        if(isDevProfileActive())
-        {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         String ip = resolveIpThatConnectedToNginx(request);
 
         // 리버스 프록시를 통한 요청이 아니거나, ip를 확인할 수 없는 경우 요청 거절
@@ -76,12 +69,6 @@ public class ApiRateLimitFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
-
-    private boolean isDevProfileActive() {
-        return Arrays.stream(env.getActiveProfiles())
-                .anyMatch(p -> p.equalsIgnoreCase("dev"));
-    }
-
 
     /**
      * 운영환경은 반드시 Nginx를 리버스 프록시로 사용한다고 가정함.

@@ -43,22 +43,11 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        if(isDevProfileActive())
-        {
-            http
-                    .authorizeHttpRequests((auth) -> auth
-                            .anyRequest().permitAll()
-                    );
-        }
-        else
-        {
-            http
-                    .authorizeHttpRequests((auth) -> auth
-                            .requestMatchers("/api/**").permitAll()
-                            .requestMatchers("/v3/api-docs/**","/swagger-ui/**", "/swagger-config/**").permitAll() //개발용임!!! 제출 시 반드시 제거!!!!!!!!!!
-                            .anyRequest().authenticated() //기본 거부 정책 적용
-                    );
-        }
+        http
+                .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/api/**").permitAll()
+                        .anyRequest().authenticated() //기본 거부 정책 적용
+                );
 
         /**
          * cors 관련 설정
@@ -88,10 +77,5 @@ public class SecurityConfig {
                 .addFilterBefore(new ApiRateLimitFilter(apiRateLimitService, env, ipSecret), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    private boolean isDevProfileActive() {
-        return Arrays.stream(env.getActiveProfiles())
-                .anyMatch(p -> p.equalsIgnoreCase("dev"));
     }
 }
