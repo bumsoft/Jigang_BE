@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -18,15 +17,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 
 @Slf4j
 @RequiredArgsConstructor
 public class ApiRateLimitFilter extends OncePerRequestFilter {
 
     private final ApiRateLimitService apiRateLimitService;
-
-    private final Environment env;
 
     private final String secret;
 
@@ -71,7 +67,9 @@ public class ApiRateLimitFilter extends OncePerRequestFilter {
     }
 
     /**
-     * 운영환경은 반드시 Nginx를 리버스 프록시로 사용한다고 가정함.
+     * 운영환경은 반드시 동일 EC2의 Nginx를 리버스 프록시로 사용한다고 가정함.
+     * 현재 환경에서 Nginx 외 다른 프록시는 존재하지 않으며 EC2는 8080을 publish하지 않음.
+     * Nginx가 443 -> 8080으로 전달 할 때, XFF를 덮어쓰므로 XFF는 신뢰할 수 있음.
      * XFF의 가장 오른쪽, Nginx로 직접 들어온 IP(Nginx가 XFF에 추가한 값)가 사용자의 클라이언트 IP
      */
     private String resolveIpThatConnectedToNginx(HttpServletRequest request)
