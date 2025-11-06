@@ -61,13 +61,6 @@ public class SecurityConfig {
         }
 
         /**
-         * csrf 보호 해제
-         * */
-        http
-                .csrf((csrf) -> csrf.disable());
-
-
-        /**
          * cors 관련 설정
          * */
         http
