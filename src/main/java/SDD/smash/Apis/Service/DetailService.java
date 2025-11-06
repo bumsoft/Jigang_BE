@@ -59,6 +59,7 @@ public class DetailService {
                 .dwellingInfo(dwellingService.getDwellingInfo(sigunguCode))
 
                 .infraDetails(infraService.getInfraDetails(sigunguCode))
+                .infraMajors(infraService.getMajorInfraNumAndScore(sigunguCode))
                 .build();
     }
 }
