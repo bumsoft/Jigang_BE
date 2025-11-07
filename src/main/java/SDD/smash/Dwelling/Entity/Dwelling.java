@@ -17,7 +17,8 @@ public class Dwelling {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "sigungu_code",
-            foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT)
+            foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT),
+            unique = true
     )
     private Sigungu sigungu;
 
